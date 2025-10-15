@@ -1,4 +1,12 @@
+import java.util.Scanner;
+
 public class BankingSystem {
+
+    static String[][] accounts = new String[100][4];
+    static String[][] loans = new String[100][2];
+
+    static int accountCount = 0;
+    static Scanner scan = new Scanner(System.in);
 
     public static void main(String[] args) {
         while (true) {
@@ -14,6 +22,15 @@ public class BankingSystem {
             System.out.println("8. Exit");
             System.out.print("Choose an option: ");
 
+            int choice = scan.nextInt();
+
+            switch (choice) {
+                case 1 -> createAccount();
+                default -> {
+                    System.out.println("Invalid choice! Press Enter to continue...");
+                    scan.nextLine(); scan.nextLine();
+                }
+            }
         }
     }
 
@@ -29,6 +46,25 @@ public class BankingSystem {
         } catch (final Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void createAccount() {
+        scan.nextLine();
+        System.out.print("Enter Name: ");
+        accounts[accountCount][0] = scan.nextLine();
+        System.out.print("Enter Account Number: ");
+        accounts[accountCount][1] = scan.nextLine();
+        System.out.print("Enter Account Type (Savings / Current / Wanitha Wasana): ");
+        accounts[accountCount][2] = scan.nextLine();
+        System.out.print("Enter Deposit Amount: ");
+        accounts[accountCount][3] = scan.nextLine();
+
+        loans[accountCount][0] = "0";
+        loans[accountCount][1] = "";
+
+        accountCount++;
+        System.out.println("Account created successfully! Press Enter to go to menu...");
+        scan.nextLine();
     }
 
 }
