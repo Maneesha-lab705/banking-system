@@ -25,27 +25,85 @@ public class BankingSystem {
             int choice = scan.nextInt();
 
             switch (choice) {
-                case 1 : createAccount();
-                break;
-                case 2 : deposit();
-                break;
-                case 3 : withdraw();
-                break;
-                case 4 : checkBalance();
-                break;
-                case 5 : transferFunds();
-                break;
-                case 6 : applyLoan();
-                break;
-                case 7 : viewLoanDetails();
-                case 8 : {
+                case 1 : {
+                    boolean isCreateAccount = createAccount();
+                    if (isCreateAccount) {
+                        System.out.println("Account created successfully!");
+                    } else {
+                        System.out.println("Account creation failed!");
+                    }
+                    pause();
+                }
+
+                case 2 : {
+                    boolean isDeposit = deposit();
+                    if (isDeposit) {
+                        System.out.println("Deposit completed successfully!");
+                    } else {
+                        System.out.println("Deposit failed!");
+                    }
+                    pause();
+                }
+
+                case 3 : {
+                    boolean isWithdraw = withdraw();
+                    if (isWithdraw) {
+                        System.out.println("Withdrawal successful!");
+                    } else {
+                        System.out.println("Withdrawal failed!");
+                    }
+                    pause();
+                }
+
+                case 4 : {
+                    String balanceInfo = checkBalance();
+                    if (balanceInfo != null) {
+                        System.out.println(balanceInfo);
+                    } else {
+                        System.out.println("Account not found!");
+                    }
+                    pause();
+                }
+
+                case 5 : {
+                    boolean isTransfer = transferFunds();
+                    if (isTransfer) {
+                        System.out.println("Funds transferred successfully!");
+                    } else {
+                        System.out.println("Fund transfer failed!");
+                    }
+                    pause();
+                }
+
+                case 6 :{
+                    boolean isLoanApplied = applyLoan();
+                    if (isLoanApplied) {
+                        System.out.println("Loan applied successfully!");
+                    } else {
+                        System.out.println("Loan application failed!");
+                    }
+                    pause();
+                }
+
+                case 7 : {
+                    String loanInfo = viewLoanDetails();
+                    if (loanInfo != null) {
+                        System.out.println(loanInfo);
+                    } else {
+                        System.out.println("Loan details not found!");
+                    }
+                    pause();
+                }
+
+                case 8 :{
                     System.out.println("Thank you. Goodbye!");
                     System.exit(0);
                 }
-                break;
+
                 default : {
                     System.out.println("Invalid choice! Press Enter to go to main menu...");
-                    scan.nextLine(); scan.nextLine();
+                    scan.nextLine();
+                    scan.nextLine();
                 }
             }
         }
@@ -65,26 +123,40 @@ public class BankingSystem {
         }
     }
 
-    public static void createAccount() {
-//        scan.nextLine();
+    public static void pause() {
+        System.out.println("Press Enter to go to main menu...");
+        scan.nextLine();
+        scan.nextLine();
+    }
+
+    public static boolean createAccount() {
         System.out.print("Enter Name: ");
-        accounts[accountCount][0] = scan.next();
+        String name = scan.next();
         System.out.print("Enter Account Number: ");
-        accounts[accountCount][1] = String.valueOf(scan.nextInt());
+        String accNum = scan.next();
         System.out.print("Enter Account Type (Savings / Current / Wanitha Wasana): ");
-        accounts[accountCount][2] = scan.next();
+        String accType = scan.next();
         System.out.print("Enter Deposit Amount: ");
-        accounts[accountCount][3] = String.valueOf(scan.nextInt());
+        double deposit = scan.nextDouble();
+
+        if (findAccount(accNum) != -1) {
+            System.out.println("Account number already exists!");
+            return false;
+        }
+
+        accounts[accountCount][0] = name;
+        accounts[accountCount][1] = accNum;
+        accounts[accountCount][2] = accType;
+        accounts[accountCount][3] = String.valueOf(deposit);
 
         loans[accountCount][0] = "0";
         loans[accountCount][1] = "";
 
         accountCount++;
-        System.out.println("Account created successfully! Press Enter to go to main menu...");
-        scan.nextLine();
+        return true;
     }
 
-    public static void deposit() {
+    public static boolean deposit() {
         System.out.print("Enter Account Number: ");
         String accNumber = scan.next();
         int index = findAccount(accNumber);
@@ -94,14 +166,15 @@ public class BankingSystem {
             double balance = Double.parseDouble(accounts[index][3]);
             balance += amount;
             accounts[index][3] = String.valueOf(balance);
-            System.out.println("Deposit successful! New Balance: " + balance);
-        } else {
+            System.out.println("New Balance: " + balance);
+            return true;
+        }else {
             System.out.println("Account not found!");
+            return false;
         }
-        pause();
     }
 
-    public static void withdraw() {
+    public static boolean withdraw() {
         System.out.print("Enter Account Number: ");
         String accNumber = scan.next();
         int index = findAccount(accNumber);
@@ -112,31 +185,33 @@ public class BankingSystem {
             if (amount <= balance) {
                 balance -= amount;
                 accounts[index][3] = String.valueOf(balance);
-                System.out.println("Withdrawal successful! New Balance: " + balance);
+                System.out.println("New Balance: " + balance);
+                return true;
             } else {
-                System.out.println("Low balance!");
+                System.out.println("Insufficient funds!");
+                return false;
             }
-        } else {
+        }else {
             System.out.println("Account not found!");
+            return false;
         }
-        pause();
     }
 
-    public static void checkBalance() {
+    public static String checkBalance() {
         System.out.print("Enter Account Number: ");
         String accNumber = scan.next();
         int index = findAccount(accNumber);
         if (index != -1) {
-            System.out.println("Account Holder: " + accounts[index][0]);
-            System.out.println("Account Type: " + accounts[index][2]);
-            System.out.println("Balance: " + accounts[index][3]);
-        } else {
+            return "Account Holder: " + accounts[index][0] +
+                    "\nAccount Type: " + accounts[index][2] +
+                    "\nBalance: " + accounts[index][3];
+        }else {
             System.out.println("Account not found!");
+            return null;
         }
-        pause();
     }
 
-    public static void applyLoan() {
+    public static boolean applyLoan() {
         System.out.print("Enter Account Number: ");
         String accNumber = scan.next();
         int index = findAccount(accNumber);
@@ -146,57 +221,58 @@ public class BankingSystem {
             loans[index][0] = scan.nextLine();
             System.out.print("Enter Loan Description: ");
             loans[index][1] = scan.nextLine();
-            System.out.println("Loan applied successfully!");
-        } else {
+            return true;
+        }else {
             System.out.println("Account not found!");
+            return false;
         }
-        pause();
     }
 
-    public static void viewLoanDetails() {
+    public static String viewLoanDetails() {
         System.out.print("Enter Account Number: ");
         String accNumber = scan.next();
         int index = findAccount(accNumber);
         if (index != -1) {
-            System.out.println("Loan Amount: " + loans[index][0]);
-            System.out.println("Loan Description: " + loans[index][1]);
-        } else {
+            return "Loan Amount: " + loans[index][0] +
+                    "\nLoan Description: " + loans[index][1];
+        }else {
             System.out.println("Account not found!");
+            return null;
         }
-        pause();
     }
 
-    public static void transferFunds() {
+    public static boolean transferFunds() {
         System.out.print("Enter Your Account Number: ");
         String fromAcc = scan.next();
         int fromIndex = findAccount(fromAcc);
         if (fromIndex == -1) {
             System.out.println("Sender account not found!");
-            pause();
-            return;
+            return false;
         }
+
         System.out.print("Enter Recipient Account Number: ");
         String toAcc = scan.next();
         int toIndex = findAccount(toAcc);
         if (toIndex == -1) {
             System.out.println("Recipient account not found!");
-            pause();
-            return;
+            return false;
         }
+
         System.out.print("Enter Amount to Transfer: ");
         double amount = scan.nextDouble();
         double fromBalance = Double.parseDouble(accounts[fromIndex][3]);
         double toBalance = Double.parseDouble(accounts[toIndex][3]);
+
         if (amount <= fromBalance) {
             fromBalance -= amount;
             toBalance += amount;
             accounts[fromIndex][3] = String.valueOf(fromBalance);
             accounts[toIndex][3] = String.valueOf(toBalance);
-            System.out.println("Transfer successful!");
+            return true;
         } else {
             System.out.println("Insufficient balance!");
+            return false;
         }
-        pause();
     }
 
     public static int findAccount(String accNumber) {
@@ -206,10 +282,5 @@ public class BankingSystem {
             }
         }
         return -1;
-    }
-
-    public static void pause() {
-        System.out.println("Press Enter to to go to main menu...");
-        scan.nextLine(); scan.nextLine();
     }
 }
