@@ -33,6 +33,7 @@ public class BankingSystem {
                         System.out.println("Account creation failed!");
                     }
                     pause();
+                    break;
                 }
 
                 case 2 : {
@@ -43,6 +44,7 @@ public class BankingSystem {
                         System.out.println("Deposit failed!");
                     }
                     pause();
+                    break;
                 }
 
                 case 3 : {
@@ -53,6 +55,7 @@ public class BankingSystem {
                         System.out.println("Withdrawal failed!");
                     }
                     pause();
+                    break;
                 }
 
                 case 4 : {
@@ -63,6 +66,7 @@ public class BankingSystem {
                         System.out.println("Account not found!");
                     }
                     pause();
+                    break;
                 }
 
                 case 5 : {
@@ -73,6 +77,7 @@ public class BankingSystem {
                         System.out.println("Fund transfer failed!");
                     }
                     pause();
+                    break;
                 }
 
                 case 6 :{
@@ -83,6 +88,7 @@ public class BankingSystem {
                         System.out.println("Loan application failed!");
                     }
                     pause();
+                    break;
                 }
 
                 case 7 : {
@@ -93,11 +99,14 @@ public class BankingSystem {
                         System.out.println("Loan details not found!");
                     }
                     pause();
+                    break;
                 }
 
                 case 8 :{
                     System.out.println("Thank you. Goodbye!");
                     System.exit(0);
+
+                    break;
                 }
 
                 default : {
@@ -112,13 +121,15 @@ public class BankingSystem {
     public static void clearConsole() {
         try {
             final String os = System.getProperty("os.name");
-            if (os.contains("Windows")) {
+            if (os.contains("Windows") && !System.getenv().containsKey("WT_SESSION")) {
+                // Use cls only if not running in Windows Terminal (PowerShell/VS Code)
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
+                // Use ANSI escape codes for modern terminals
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -139,6 +150,10 @@ public class BankingSystem {
         System.out.print("Enter Deposit Amount: ");
         double deposit = scan.nextDouble();
 
+        if (!accNum.matches("\\d{10}")) {
+            System.out.println(" Invalid account number! It must contain exactly 10 digits.");
+            return false;
+        }
         if (findAccount(accNum) != -1) {
             System.out.println("Account number already exists!");
             return false;
